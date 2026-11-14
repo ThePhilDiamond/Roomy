@@ -12,6 +12,16 @@ func startupDisk() -> (total: Int64, free: Int64) {
     return (Int64(values?.volumeTotalCapacity ?? 0), values?.volumeAvailableCapacityForImportantUsage ?? 0)
 }
 
+/// The startup disk split into what a home folder scan can explain: the home folder, apps, and everything else macOS keeps.
+struct DiskBreakdown {
+    let total: Int64
+    let free: Int64
+    let home: Int64
+    let apps: Int64
+    /// macOS itself, swap, and system files: whatever is in use outside the home folder and Applications.
+    var system: Int64 { total - free - home - apps }
+}
+
 /// The path with the home folder shown as `~`.
 func tildePath(_ url: URL) -> String {
     let home = URL.homeDirectory.path
