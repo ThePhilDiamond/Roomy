@@ -140,6 +140,15 @@ struct ReportView: View {
                                 PixelText(text: result.stoppedEarly ? "STOPPED EARLY" : "SCAN COMPLETE!", pixel: 4.5, color: Retro.amber, aberration: true)
                                 Text("\(bytes(result.tree.size)) in \(result.files.formatted()) files under \(tildePath(model.root)), measured in \(Int(result.seconds.rounded())) seconds. Everything stayed on this Mac.")
                                     .font(Retro.font(12)).foregroundStyle(Retro.phosphor).fixedSize(horizontal: false, vertical: true)
+                                // The Disk panel counts the whole disk, so show where the rest of it goes.
+                                let disk = startupDisk()
+                                if model.root.path == URL.homeDirectory.path, !result.stoppedEarly, let apps = model.appsSize {
+                                    let system = disk.total - disk.free - result.tree.size - apps
+                                    if system > 0 {
+                                        Text("Your \(bytes(disk.total)) disk: \(bytes(result.tree.size)) home folder, \(bytes(apps)) apps, \(bytes(system)) macOS and system, \(bytes(disk.free)) free.\nChoose Applications under Places to see your apps.")
+                                            .font(Retro.font(11)).foregroundStyle(Retro.dim).fixedSize(horizontal: false, vertical: true)
+                                    }
+                                }
                             }
                             Spacer()
                             Button("Scan Again") { Task { await model.scan(model.root, fresh: true) } }.buttonStyle(.retro)

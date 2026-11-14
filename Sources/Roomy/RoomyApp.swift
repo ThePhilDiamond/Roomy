@@ -171,9 +171,7 @@ struct DiskPanel: View {
 
     var body: some View {
         let _ = model.revision
-        let values = try? URL(filePath: "/").resourceValues(forKeys: [.volumeTotalCapacityKey, .volumeAvailableCapacityForImportantUsageKey])
-        let total = Int64(values?.volumeTotalCapacity ?? 0)
-        let free = values?.volumeAvailableCapacityForImportantUsage ?? 0
+        let (total, free) = startupDisk()
         let used = Double(total - free) / Double(max(total, 1))
         RetroPanel("DISK") {
             VStack(alignment: .leading, spacing: 8) {

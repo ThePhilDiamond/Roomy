@@ -6,6 +6,12 @@ func bytes(_ count: Int64) -> String {
     ByteCountFormatter.string(fromByteCount: count, countStyle: .file)
 }
 
+/// The startup disk's size and the space free on it.
+func startupDisk() -> (total: Int64, free: Int64) {
+    let values = try? URL(filePath: "/").resourceValues(forKeys: [.volumeTotalCapacityKey, .volumeAvailableCapacityForImportantUsageKey])
+    return (Int64(values?.volumeTotalCapacity ?? 0), values?.volumeAvailableCapacityForImportantUsage ?? 0)
+}
+
 /// The path with the home folder shown as `~`.
 func tildePath(_ url: URL) -> String {
     let home = URL.homeDirectory.path
