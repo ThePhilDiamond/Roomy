@@ -35,7 +35,7 @@ struct ExplorerView: View {
                                         SmallFilesRow(count: folder.smallFiles, size: folder.smallFilesSize, largest: largest)
                                     }
                                     if folder.children.isEmpty && folder.smallFiles == 0 {
-                                        Text(folder.isLocked ? "macOS kept this folder closed." : "This folder is empty.")
+                                        Text(folder.isLocked ? "macOS kept this folder closed." : folder.isCloudOnly ? "Your cloud drive hasn't downloaded this folder, so it takes no space here." : "This folder is empty.")
                                             .font(Retro.font(12)).foregroundStyle(Retro.dim).padding(24)
                                     }
                                 }
@@ -74,7 +74,7 @@ struct ExplorerView: View {
                     .lineLimit(1)
             }
             Spacer(minLength: 8)
-            VerdictTag(verdict: model.rule(for: folder)?.verdict, isLocked: folder.isLocked)
+            VerdictTag(verdict: model.rule(for: folder)?.verdict, isLocked: folder.isLocked, isCloudOnly: folder.isCloudOnly)
             PixelText(text: bytes(folder.size), pixel: 2.6, color: Retro.amber)
         }
         .padding(12)
